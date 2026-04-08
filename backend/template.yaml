@@ -24,6 +24,29 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
 
+  GetProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get-profile
+      Runtime: python3.13
+      Handler: get_profile.lambda_handler
+      CodeUri: src/python/get_profile/
+      MemorySize: 256
+      Timeout: 10
+      Environment:
+        Variables:
+          TABLE_NAME: ecommerce
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
+      Events:
+        GetProfileApi:
+          Type: Api
+          Properties:
+            Path: /api/v1/profile
+            Method: get 
+
+
   CreateExampleFunction:
     Type: AWS::Serverless::Function
     Properties:
