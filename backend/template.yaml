@@ -1,17 +1,17 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Runtime: dotnet8
+    Runtime: provided.al2023
     MemorySize: 256
     Timeout: 10
 
 Resources:
-  ExamplesTable:
+  OrdersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: Example
+      TableName: Orders
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: PK
@@ -24,46 +24,25 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
 
-  CreateExampleFunction:
+  GetOrdersFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: create-example
-      Runtime: dotnet8
-      Handler: ExampleManager.Create::ExampleManager.Create.Function::FunctionHandler
-      CodeUri: src/ExampleManager.Create/
+      FunctionName: get-orders
+      Runtime: provided.al2023
+      Handler: main
+      CodeUri: ./src/go/functions/get-orders/
       MemorySize: 256
       Timeout: 10
       Environment:
         Variables:
-          TABLE_NAME: Examples
+          TABLE_NAME: !Ref OrdersTable
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: Examples
+        - DynamoDBReadPolicy:
+            TableName: !Ref OrdersTable
       Events:
-        CreateExampleApi:
+        GetOrdersApi:
           Type: Api
           Properties:
-            Path: /api/v1/examples
-            Method: post
-        
-  GetExampleFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: get-example
-      Runtime: dotnet8
-      Handler: ExampleManager.Get::ExampleManager.Get.Function::FunctionHandler
-      CodeUri: src/ExampleManager.Get/
-      MemorySize: 256
-      Timeout: 10
-      Environment:
-        Variables:
-          TABLE_NAME: Examples
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: Examples
-      Events:
-        CreateExampleApi:
-          Type: Api
-          Properties:
-            Path: /api/v1/examples
+            Path: /api/v1/orders
             Method: get
+
