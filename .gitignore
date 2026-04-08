@@ -1,0 +1,29 @@
+# Build artifacts
+.aws-sam/
+*.zip
+*.exe
+
+# Go
+vendor/
+*.test
+coverage.out
+bootstrap
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# AWS
+*.log
+aws_credentials.json
+credentials.json
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
