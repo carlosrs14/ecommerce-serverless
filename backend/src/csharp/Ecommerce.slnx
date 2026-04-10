@@ -1,0 +1,4 @@
+﻿<Solution>
+  <Project Path="Ecommerce.Shared/Ecommerce.Shared.csproj" />
+  <Project Path="Ecommerce.CreateProduct/Ecommerce.CreateProduct.csproj" />
+</Solution>
