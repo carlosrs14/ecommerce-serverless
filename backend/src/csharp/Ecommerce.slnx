@@ -1,4 +1,8 @@
 ﻿<Solution>
-  <Project Path="Ecommerce.Shared/Ecommerce.Shared.csproj" />
-  <Project Path="Ecommerce.CreateProduct/Ecommerce.CreateProduct.csproj" />
+  <Folder Name="/Ecommerce.Shared/">
+    <Project Path="Ecommerce.Shared/Ecommerce.Shared.csproj" />
+  </Folder>
+  <Folder Name="/Ecommerce.CreateProduct/">
+    <Project Path="Ecommerce.CreateProduct/Ecommerce.CreateProduct.csproj" />
+  </Folder>
 </Solution>
