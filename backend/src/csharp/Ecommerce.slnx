@@ -1,0 +1,11 @@
+﻿<Solution>
+  <Folder Name="/Ecommerce.Shared/">
+    <Project Path="Ecommerce.Shared/Ecommerce.Shared.csproj" />
+  </Folder>
+  <Folder Name="/Ecommerce.CreateProduct/">
+    <Project Path="Ecommerce.CreateProduct/Ecommerce.CreateProduct.csproj" />
+  </Folder>
+  <Folder Name="/Ecommerce.UpdateProduct/">
+    <Project Path="Ecommerce.UpdateProduct/Ecommerce.UpdateProduct.csproj" />
+  </Folder>
+</Solution>
