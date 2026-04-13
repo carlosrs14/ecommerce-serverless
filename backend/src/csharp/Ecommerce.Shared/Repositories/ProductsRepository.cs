@@ -1,27 +1,24 @@
-
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.Model;
+using Amazon.DynamoDBv2.DataModel;
+using Ecommerce.Shared.Models.Products;
 
 namespace Ecommerce.Shared.Repositories;
 
-public class ProductsRepository
+public class ProductsRepository(IDynamoDBContext context)
 {
-    private readonly AmazonDynamoDBClient _client = new();
+    private readonly IDynamoDBContext _context = context;
 
-    public async Task SaveProductAsync()
+    public async Task SaveProductAsync(Product product)
     {
-        var item = new Dictionary<string, AttributeValue>
-        {
-            // TODO parse items
-        };
-        
-        await _client.PutItemAsync(
-            new PutItemRequest
-            {
-                TableName = "Ecommerce",
-                Item = item
-            }
-        );
+        await _context.SaveAsync(product);
     }
 
+    public async Task<Product?> GetProductAsync(string id)
+    {
+        return await _context.LoadAsync<Product>($"PRODUCT#{id}", $"PRODUCT#{id}");
+    }
+
+    public async Task UpdateProductAsync(Product product)
+    {
+        await _context.SaveAsync(product);
+    }
 }
