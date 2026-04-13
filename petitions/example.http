@@ -1,1 +1,23 @@
-curl -X GET  http://localhost:8080/
+### Create a Product (Catalog)
+POST http://localhost:3000/api/v1/products
+Content-Type: application/json
+
+{
+    "name": "iPhone 15 Pro",
+    "brand": "Apple",
+    "description": "256GB, Space Black",
+    "category": "Smartphones"
+}
+
+### Update a Product (Catalog)
+# Note: Replace {id} with the ID returned by the POST request
+PUT http://localhost:3000/api/v1/products/{id}
+Content-Type: application/json
+
+{
+    "description": "256GB, Space Black (Special Edition)",
+    "category": "Premium Smartphones"
+}
+
+### Get Profile
+GET http://localhost:3000/api/v1/profile
