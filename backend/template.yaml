@@ -8,21 +8,34 @@ Globals:
     Timeout: 10
 
 Resources:
-  ExamplesTable:
+  EcommerceTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: Example
+      TableName: ecommerce
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: PK
           AttributeType: S
         - AttributeName: SK
           AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
       KeySchema:
         - AttributeName: PK
           KeyType: HASH
         - AttributeName: SK
           KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
 
   GetProfileFunction:
     Type: AWS::Serverless::Function
@@ -30,7 +43,7 @@ Resources:
       FunctionName: get-profile
       Runtime: python3.13
       Handler: get_profile.lambda_handler
-      CodeUri: src/python/get_profile/
+      CodeUri: src/python/
       MemorySize: 256
       Timeout: 10
       Environment:
@@ -46,47 +59,47 @@ Resources:
             Path: /api/v1/profile
             Method: get 
 
-
-  CreateExampleFunction:
+  CreateProductFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: create-example
+      FunctionName: create-product
       Runtime: dotnet8
-      Handler: ExampleManager.Create::ExampleManager.Create.Function::FunctionHandler
-      CodeUri: src/ExampleManager.Create/
+      Handler: Ecommerce.CreateProduct::Ecommerce.CreateProduct.Function::FunctionHandler
+      CodeUri: src/csharp/Ecommerce.CreateProduct/
       MemorySize: 256
       Timeout: 10
       Environment:
         Variables:
-          TABLE_NAME: Examples
+          TABLE_NAME: ecommerce
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: Examples
+            TableName: ecommerce
       Events:
-        CreateExampleApi:
+        CreateProductApi:
           Type: Api
           Properties:
-            Path: /api/v1/examples
+            Path: /api/v1/products
             Method: post
         
-  GetExampleFunction:
+  UpdateProductFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: get-example
+      FunctionName: update-product
       Runtime: dotnet8
-      Handler: ExampleManager.Get::ExampleManager.Get.Function::FunctionHandler
-      CodeUri: src/ExampleManager.Get/
+      Handler: Ecommerce.UpdateProduct::Ecommerce.UpdateProduct.Function::FunctionHandler
+      CodeUri: src/csharp/Ecommerce.UpdateProduct/
       MemorySize: 256
       Timeout: 10
       Environment:
         Variables:
-          TABLE_NAME: Examples
+          TABLE_NAME: ecommerce
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: Examples
+            TableName: ecommerce
       Events:
-        CreateExampleApi:
+        UpdateProductApi:
           Type: Api
           Properties:
-            Path: /api/v1/examples
-            Method: get
+            Path: /api/v1/products/{id}
+            Method: put
+
