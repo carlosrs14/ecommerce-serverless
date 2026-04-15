@@ -41,7 +41,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: get-profile
-      Runtime: python3.13
+      Runtime: python3.12
       Handler: get_profile.lambda_handler
       CodeUri: src/python/
       MemorySize: 256
