@@ -1,9 +1,9 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Runtime: dotnet8
+    Runtime: provided.al2
     MemorySize: 256
     Timeout: 10
 
@@ -37,11 +37,19 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+  Cache:
+    Type: AWS::ElastiCache::ServerlessCache
+    Properties:
+      ServerlessCacheName: ecommerce-cache
+      Engine: redis
+      DailySnapshotTime: "00:00"
+      Description: Cache para perfiles (cache-aside)
+
   GetProfileFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: get-profile
-      Runtime: python3.13
+      Runtime: python3.12
       Handler: get_profile.lambda_handler
       CodeUri: src/python/
       MemorySize: 256
@@ -49,6 +57,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: ecommerce
+          CACHE_ENDPOINT: !GetAtt Cache.Endpoint.Address
       Policies:
         - DynamoDBCrudPolicy:
             TableName: ecommerce
@@ -103,3 +112,29 @@ Resources:
             Path: /api/v1/products/{id}
             Method: put
 
+  GetOrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get-orders
+      Runtime: provided.al2
+      Handler: main
+      CodeUri: ./src/go/functions/get-orders/
+      MemorySize: 256
+      Timeout: 30
+      Environment:
+        Variables:
+          TABLE_NAME: ecommerce
+          INDEX_NAME: GSI1
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
+      Events:
+        GetOrdersApi:
+          Type: Api
+          Properties:
+            Path: /api/v1/users/{email}/orders
+            Method: get
+
+Outputs:
+  CacheEndpoint:
+    Value: !GetAtt Cache.Endpoint.Address
