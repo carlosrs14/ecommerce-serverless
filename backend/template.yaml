@@ -37,6 +37,14 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+  Cache:
+    Type: AWS::ElastiCache::ServerlessCache
+    Properties:
+      ServerlessCacheName: ecommerce-cache
+      Engine: redis
+      DailySnapshotTime: "00:00"
+      Description: Cache para perfiles (cache-aside)
+
   GetProfileFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -49,6 +57,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: ecommerce
+          CACHE_ENDPOINT: !GetAtt Cache.Endpoint.Address
       Policies:
         - DynamoDBCrudPolicy:
             TableName: ecommerce
@@ -126,3 +135,6 @@ Resources:
             Path: /api/v1/users/{email}/orders
             Method: get
 
+Outputs:
+  CacheEndpoint:
+    Value: !GetAtt Cache.Endpoint.Address
