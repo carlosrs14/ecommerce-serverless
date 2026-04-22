@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 
 Globals:
   Function:
-    Runtime: provided.al2023
+    Runtime: provided.al2
     MemorySize: 256
     Timeout: 10
 
@@ -102,4 +102,27 @@ Resources:
           Properties:
             Path: /api/v1/products/{id}
             Method: put
+
+  GetOrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get-orders
+      Runtime: provided.al2
+      Handler: main
+      CodeUri: ./src/go/functions/get-orders/
+      MemorySize: 256
+      Timeout: 30
+      Environment:
+        Variables:
+          TABLE_NAME: ecommerce
+          INDEX_NAME: GSI1
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
+      Events:
+        GetOrdersApi:
+          Type: Api
+          Properties:
+            Path: /api/v1/users/{email}/orders
+            Method: get
 

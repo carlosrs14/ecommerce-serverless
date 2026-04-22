@@ -5,7 +5,7 @@ Un ecommerce desarrollado con una arquitectura serverless en el backend y una ap
 ## Tecnologías
 
 ### Backend (Serverless)
-- **Runtime:** .NET 8 (C#), Python 3.13, Golang
+- **Runtime:** .NET 8 (C#), Python 3.13, Golang 1.21
 - **Infraestructura:** AWS Lambda con [AWS SAM](https://aws.amazon.com/serverless/sam/)
 - **Base de Datos:** Amazon DynamoDB (Single-table design)
 - **API:** Amazon API Gateway

@@ -19,7 +19,7 @@ type Response struct {
 }
 
 func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	email := request.QueryStringParameters["email"]
+	email := request.PathParameters["email"]
 	if email == "" {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
@@ -28,6 +28,7 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	}
 
 	tableName := os.Getenv("TABLE_NAME")
+	indexName := os.Getenv("INDEX_NAME")
 	if tableName == "" {
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -45,9 +46,10 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 
 	client := dynamodb.NewFromConfig(cfg)
 
-	keyCondExpr := "PK = :pk AND begins_with(SK, :prefix)"
+	keyCondExpr := "GSI1PK = :pk AND begins_with(GSI1SK, :prefix)"
 	result, err := client.Query(ctx, &dynamodb.QueryInput{
 		TableName:              &tableName,
+		IndexName:              &indexName,
 		KeyConditionExpression: &keyCondExpr,
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":pk":     &types.AttributeValueMemberS{Value: "USER#" + email},

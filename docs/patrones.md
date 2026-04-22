@@ -1,77 +1,31 @@
- # Actividad modelado orientado a consultas
+# E-commerce Single Table Design
 
+## Access Patterns
 
-## Pasos:
-- 1. identificar los patrones de accesso
-- 2. Diseñar llaves sobre cargadas con jerarqía
+| Query | Use Case |
+| :--- | :--- |
+| Get profile by email | GET `/api/v1/profile?email=user@example.com` |
+| Get user's orders | GET `/api/v1/users/{email}/orders` |
+| Get order details | GET `/api/v1/orders/{orderId}` |
+| Create product | POST `/api/v1/products` |
+| Update product | PUT `/api/v1/products/{id}` |
 
+## Key Schema
 
+| PK | SK | GSI1PK | GSI1SK | Attributes |
+| :--- | :--- | :--- | :--- | :--- |
+| `USER#email` | `PROFILE` | - | - | {name, photo, addresses, paymentMethods} |
+| `USER#email` | `ORDER#orderId` | `USER#email` | `ORDER#orderId` | {date, address, total, status} |
+| `ORDER#orderId` | `HEAD` | - | - | {date, address, total, status, userEmail} |
+| `ORDER#orderId` | `ITEM#productId` | - | - | {quantity, price, subtotal} |
+| `PRODUCT#id` | `PRODUCT#id` | - | - | {name, price, description, stock} |
 
-## Solución:
-
-### 1. Patrones de acceso (preguntas)
-#### Mi perfil
-perfil del usuario
-- nombre
-- correo
-- direcciones
-- pagos
-- foto
-
-#### Pedidos recientes
-Útlimos 10 pedidos del usuario
-- estado
-- fecha de creación
-- dirección de envío
-
-#### Detalle del pedido
-Detalle de un pedido en específico
-- id
-- fecha
-- dirección a donde va
-- estado
-- total
-- items:
-    - foto
-    - nombre-producto
-    - cantidad
-    - precio-unitario
-    - sub-total
-
-### 2. Diseño de las llaves con sobre cargas (Single-Table Design)
-
-| Entidad | PK | SK | GSI1PK | GSI1SK | Atributos |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Producto (Catálogo)** | `PRODUCT#<id>` | `PRODUCT#<id>` | - | - | Name, Brand, Description, EAN, Category |
-| **Oferta (Vendedor)** | `PRODUCT#<id>` | `OFFER#<seller_id>` | `SELLER#<seller_id>` | `PRODUCT#<id>` | Price, Stock, Condition, Status |
-| **Perfil Usuario** | `USER#<user_id>` | `PROFILE#<user_id>` | - | - | Name, Email, Photo |
-| **Dirección Usuario** | `USER#<user_id>` | `ADDRESS#<addr_id>` | - | - | Street, City, ZipCode |
-| **Pedido** | `USER#<user_id>` | `ORDER#<order_id>#<date>` | `ORDER#<order_id>` | `ORDER#<order_id>` | Status, Total, ShippingAddress |
-| **Detalle Pedido** | `ORDER#<order_id>` | `ITEM#<product_id>` | - | - | Quantity, UnitPrice, SubTotal |
-
-#### Notas:
-- El **Catálogo** contiene la información técnica y global del producto.
-- La **Oferta** vincula a un vendedor con un producto del catálogo, permitiendo diferentes precios y stocks para el mismo artículo.
-- **GSI1** permite al vendedor consultar todas sus ofertas activas.
-
-
-#### Diseño de tabla (Single Table Design)
-
-| PK | SK | Data |
-| :--- | :--- | :--- |
-| USER#email | PROFILE | {Nombre, Foto, Direcciones, MetodosPago} |
-| USER#email | ORDER#orderId | {Fecha, Direccion, Total, Estado} |
-| USER#email | PAYMENT#orderId | {Monto, Metodo, Fecha, Estatus} |
-| ORDER#orderId | HEAD | {Fecha, Direccion, Total, Estado} |
-| ORDER#orderId | ITEM#productId | {Cantidad, Precio, Subtotal} |
-
-#### Patrones de consulta
+## Key Condition Examples
 
 | Query | Key Condition |
 | :--- | :--- |
-| Mi perfil | Get PK=USER#email, SK=PROFILE |
-| Mis pedidos (todos) | Query PK=USER#email, SK between ORDER# and ORDER#\uffff |
-| Detalle del pedido | Get PK=ORDER#orderId, SK=HEAD |
-| Items del pedido | Query PK=ORDER#orderId, SK begins with ITEM# |
-| Payment del pedido | Get PK=USER#email, SK=PAYMENT#orderId |
-
+| My profile | Get PK=`USER#email`, SK=`PROFILE` |
+| My orders | Query GSI1PK=`USER#email`, GSI1SK between `ORDER#` and `ORDER#\uffff` |
+| Order details | Get PK=`ORDER#orderId`, SK=`HEAD` |
+| Order items | Query PK=`ORDER#orderId`, SK begins with `ITEM#` |
+| Product | Get PK=`PRODUCT#id`, SK=`PRODUCT#id` |
