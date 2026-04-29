@@ -1,0 +1,138 @@
+openapi: 3.0.1
+info:
+  title: Ecommerce API
+  description: API para el backend de Ecommerce (Single Table Design)
+  version: 1.0.0
+paths:
+  /api/v1/profile:
+    get:
+      summary: Obtener perfil de usuario
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+  /api/v1/products:
+    get:
+      summary: Listar productos
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Crear producto (C#)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: {type: string}
+                brand: {type: string}
+                description: {type: string}
+                category: {type: string}
+      responses:
+        201:
+          description: Creado
+  /api/v1/products/{id}:
+    get:
+      summary: Obtener producto y ofertas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Actualizar producto (C#)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        200:
+          description: OK
+    delete:
+      summary: Eliminar producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        204:
+          description: Eliminado
+  /api/v1/products/{id}/offers:
+    post:
+      summary: Crear oferta para un producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sellerId: {type: string}
+                price: {type: number}
+                stock: {type: integer}
+      responses:
+        201:
+          description: Creada
+  /api/v1/products/{id}/offers/{sellerId}:
+    put:
+      summary: Actualizar oferta
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+        - name: sellerId
+          in: path
+          required: true
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price: {type: number}
+                stock: {type: integer}
+      responses:
+        200:
+          description: OK
+  /api/v1/sellers/{id}/offers:
+    get:
+      summary: Listar ofertas de un vendedor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        200:
+          description: OK
+  /api/v1/users/{email}/orders:
+    get:
+      summary: Listar órdenes de un usuario (Go)
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        200:
+          description: OK
