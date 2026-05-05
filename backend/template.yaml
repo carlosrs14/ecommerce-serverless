@@ -92,11 +92,15 @@ Resources:
       FunctionName: list-products
       Handler: list_products.lambda_handler
       CodeUri: src/python/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         ListProductsApi:
           Type: Api
-          Properties: {Path: /api/v1/products, Method: get}
+          Properties:
+            Path: /api/v1/products
+            Method: get
 
   GetProductDetailsFunction:
     Type: AWS::Serverless::Function
@@ -104,11 +108,15 @@ Resources:
       FunctionName: get-product-details
       Handler: get_product.lambda_handler
       CodeUri: src/python/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         GetProductApi:
           Type: Api
-          Properties: {Path: /api/v1/products/{id}, Method: get}
+          Properties:
+            Path: /api/v1/products/{id}
+            Method: get
   
   DeleteProductFunction:
     Type: AWS::Serverless::Function
@@ -116,11 +124,15 @@ Resources:
       FunctionName: delete-product
       Handler: delete_product.lambda_handler
       CodeUri: src/python/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         DeleteProductApi:
           Type: Api
-          Properties: {Path: /api/v1/products/{id}, Method: delete}
+          Properties:
+            Path: /api/v1/products/{id}
+            Method: delete
 
   CreateOfferFunction:
     Type: AWS::Serverless::Function
@@ -128,11 +140,15 @@ Resources:
       FunctionName: create-offer
       Handler: create_offer.lambda_handler
       CodeUri: src/python/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         CreateOfferApi:
           Type: Api
-          Properties: {Path: /api/v1/products/{id}/offers, Method: post}
+          Properties:
+            Path: /api/v1/products/{id}/offers
+            Method: post
 
   UpdateOfferFunction:
     Type: AWS::Serverless::Function
@@ -140,11 +156,15 @@ Resources:
       FunctionName: update-offer
       Handler: update_offer.lambda_handler
       CodeUri: src/python/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         UpdateOfferApi:
           Type: Api
-          Properties: {Path: /api/v1/products/{id}/offers/{sellerId}, Method: put}
+          Properties:
+            Path: /api/v1/products/{id}/offers/{sellerId}
+            Method: put
 
   GetSellerOffersFunction:
     Type: AWS::Serverless::Function
@@ -152,11 +172,15 @@ Resources:
       FunctionName: get-seller-offers
       Handler: get_seller_offers.lambda_handler
       CodeUri: src/python/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         GetSellerOffersApi:
           Type: Api
-          Properties: {Path: /api/v1/sellers/{id}/offers, Method: get}
+          Properties:
+            Path: /api/v1/sellers/{id}/offers
+            Method: get
 
   CreateProductFunction:
     Type: AWS::Serverless::Function
@@ -165,11 +189,15 @@ Resources:
       Runtime: dotnet8
       Handler: Ecommerce.CreateProduct::Ecommerce.CreateProduct.Function::FunctionHandler
       CodeUri: src/csharp/Ecommerce.CreateProduct/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         CreateProductApi:
           Type: Api
-          Properties: {Path: /api/v1/products, Method: post}
+          Properties:
+            Path: /api/v1/products
+            Method: post
         
   UpdateProductFunction:
     Type: AWS::Serverless::Function
@@ -178,11 +206,15 @@ Resources:
       Runtime: dotnet8
       Handler: Ecommerce.UpdateProduct::Ecommerce.UpdateProduct.Function::FunctionHandler
       CodeUri: src/csharp/Ecommerce.UpdateProduct/
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         UpdateProductApi:
           Type: Api
-          Properties: {Path: /api/v1/products/{id}, Method: put}
+          Properties:
+            Path: /api/v1/products/{id}
+            Method: put
 
   GetOrdersFunction:
     Type: AWS::Serverless::Function
@@ -192,11 +224,15 @@ Resources:
       Handler: main
       CodeUri: ./src/go/functions/get-orders/
       Timeout: 30
-      Policies: [DynamoDBCrudPolicy: {TableName: ecommerce}]
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: ecommerce
       Events:
         GetOrdersApi:
           Type: Api
-          Properties: {Path: /api/v1/users/{email}/orders, Method: get}
+          Properties:
+            Path: /api/v1/users/{email}/orders
+            Method: get
 
 Outputs:
   SwaggerUI:
